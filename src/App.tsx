@@ -2,6 +2,7 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { LoginForm } from './components/LoginForm';
+import { ResetPassword } from './components/ResetPassword';
 import { ProtectedRoute } from './routes/ProtectedRoutes';
 import { Dashboard } from './pages/dashboard/Dashboard';
 import { DashboardLayout } from './pages/dashboard/DashboardLayout';
@@ -13,6 +14,7 @@ function App() {
       <AuthProvider>
         <Routes>
           <Route path="/login" element={<LoginRoute />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
 
           <Route element={<ProtectedRoute />}>
             <Route element={<DashboardLayout />}>

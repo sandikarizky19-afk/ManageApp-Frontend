@@ -1,17 +1,9 @@
 import { type FormEvent, useState } from 'react';
-import { SERVICES } from '../../lib/api';
-
-type Role = 'admin' | 'user';
-
-interface RegisterForm {
-  username: string;
-  email: string;
-  password: string;
-  role: Role;
-}
+import { registerUser } from '../../services/auth.service';
+import type { RegisterRequest } from '../../types/auth';
 
 export function Register() {
-  const [form, setForm] = useState<RegisterForm>({
+  const [form, setForm] = useState<RegisterRequest>({
     username: '',
     email: '',
     password: '',
@@ -66,25 +58,10 @@ export function Register() {
     try {
       setIsLoading(true);
 
-      const response = await fetch(`${SERVICES.AUTH}/api/v1/auth/register`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(form),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(
-          data.error || data.message || 'Gagal mendaftarkan user',
-        );
-      }
+      await registerUser(form);
 
       setSuccess('User berhasil didaftarkan');
 
-      // Reset form
       setForm({
         username: '',
         email: '',

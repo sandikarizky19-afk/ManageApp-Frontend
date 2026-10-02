@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { LoadingScreen } from './LoadingScreen';
 
@@ -67,6 +68,12 @@ export function LoginForm() {
                 Login
               </button>
             </form>
+            <Link
+              className="mt-4 block text-right text-sm font-medium text-teal-700 hover:text-teal-800"
+              to="/reset-password"
+            >
+              Lupa password?
+            </Link>
             {error && <p className="message error">{error}</p>}
           </div>
         </div>
