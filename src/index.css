@@ -46,6 +46,21 @@
     disabled:hover:bg-teal-600;
 }
 
+@keyframes float2 {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+.animate-float2 {
+  animation: float 2.5s ease-in-out infinite;
+}
+
 @keyframes float {
   0%,
   100% {
@@ -102,4 +117,16 @@
     hover:bg-red-100
     disabled:cursor-not-allowed
     disabled:opacity-50;
+}
+
+.profile-input {
+  @apply w-full rounded-lg border border-gray-300
+  bg-gray-50 px-4 py-2.5
+    text-sm text-gray-900
+    outline-none transition-all
+    placeholder:text-gray-400
+    hover:border-gray-400
+    focus:border-teal-500
+    focus:bg-white
+    focus:ring-4 focus:ring-teal-50;
 }

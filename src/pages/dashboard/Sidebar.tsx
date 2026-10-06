@@ -12,7 +12,7 @@ import {
 // Jangan pakai '#', karena NavLink akan selalu menganggapnya "aktif".
 const NAV_ITEMS = [
   { label: 'Dashboard', to: '/dashboard', icon: LayoutDashboard },
-  { label: 'Profile', to: null, icon: User },
+  { label: 'Profile', to: '/profile', icon: User },
   { label: 'Settings', to: null, icon: Settings },
   { label: 'Register', to: '/register', icon: UserRoundPlus },
 ] as const;

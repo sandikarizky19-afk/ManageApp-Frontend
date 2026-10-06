@@ -8,7 +8,7 @@ import {
   markAuthActivity,
   refreshAccessToken,
 } from '../lib/api';
-import { loginUser, logoutUser } from '../services/auth.service';
+import { loginUser, logoutUser } from '../services/authService';
 
 interface AuthContextType {
   user: string | null;

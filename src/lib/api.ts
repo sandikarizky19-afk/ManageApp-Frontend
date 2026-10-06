@@ -103,7 +103,7 @@ export async function refreshAccessToken(): Promise<string> {
 
   if (!res.ok) {
     clearAuthTokens();
-    throw new Error(data?.error || 'Refresh token gagal.');
+    throw new Error(data?.message || data?.error || 'Refresh token gagal.');
   }
 
   const nextAccessToken = data?.data?.access_token ?? data?.access_token;
@@ -162,7 +162,12 @@ export async function apiFetch<T>(
 
   if (!response.ok) {
     const errorBody = await response.json().catch(() => ({}));
-    throw new Error(errorBody?.error || response.statusText || 'API error');
+    throw new Error(
+      errorBody?.message ||
+        errorBody?.error ||
+        response.statusText ||
+        'API error',
+    );
   }
 
   return response.json() as Promise<T>;
@@ -174,3 +179,18 @@ export const SERVICES = {
 };
 
 export { ACCESS_TOKEN_KEY, REFRESH_TOKEN_KEY, getAccessToken, getRefreshToken };
+
+export function getTokenClaims(): {
+  user_name?: string;
+  email?: string;
+  role?: string;
+} | null {
+  const token = getAccessToken();
+  if (!token) return null;
+  try {
+    const payload = token.split('.')[1];
+    return JSON.parse(atob(payload.replace(/-/g, '+').replace(/_/g, '/')));
+  } catch {
+    return null;
+  }
+}
