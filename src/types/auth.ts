@@ -48,3 +48,9 @@ export interface ChangePasswordRequest {
   old_password: string;
   new_password: string;
 }
+
+export interface CheckAktifUserResponse {
+  id: number;
+  username: string;
+  deleted_at: string;
+}

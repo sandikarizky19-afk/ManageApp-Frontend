@@ -136,6 +136,11 @@ export async function apiFetch<T>(
     requestHeaders.set('Authorization', `Bearer ${token}`);
   }
 
+  console.log('API REQUEST:', {
+    url,
+    method: fetchOptions.method ?? 'GET',
+  });
+
   let response = await fetch(url, {
     ...fetchOptions,
     headers: requestHeaders,

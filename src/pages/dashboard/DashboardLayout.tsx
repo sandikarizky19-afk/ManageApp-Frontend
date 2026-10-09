@@ -13,20 +13,20 @@ export function DashboardLayout() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="flex h-screen flex-col overflow-hidden bg-gray-50">
       <Navbar
         user={user}
         onToggleSidebar={() => setIsSidebarOpen((prev) => !prev)}
       />
 
-      <div className="flex">
+      <div className="flex flex-1 overflow-hidden">
         <Sidebar
           isOpen={isSidebarOpen}
           onClose={() => setIsSidebarOpen(false)}
           onLogout={handleLogout}
         />
 
-        <main className="min-w-0 flex-1 p-4 sm:p-8 lg:p-16">
+        <main className="flex-1 overflow-y-auto p-4 sm:p-8 lg:p-16">
           <Outlet />
         </main>
       </div>

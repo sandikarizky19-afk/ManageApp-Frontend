@@ -8,6 +8,7 @@ import { Dashboard } from './pages/dashboard/Dashboard';
 import { DashboardLayout } from './pages/dashboard/DashboardLayout';
 import { Register } from './pages/register/register';
 import { Profile } from './pages/profile/profile';
+import { Cashflow } from './pages/cashflow/CashFlow';
 
 function App() {
   return (
@@ -20,8 +21,9 @@ function App() {
           <Route element={<ProtectedRoute />}>
             <Route element={<DashboardLayout />}>
               <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/register" element={<Register />} />
               <Route path="/profile" element={<Profile />} />
+              <Route path="/cashflow" element={<Cashflow />} />
+              <Route path="/register" element={<Register />} />
             </Route>
           </Route>
 

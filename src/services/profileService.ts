@@ -2,6 +2,7 @@ import { apiFetch, SERVICES } from '../lib/api';
 import type {
   ApiResponse,
   ChangePasswordRequest,
+  CheckAktifUserResponse,
   ProfileResponse,
   UpdateProfileRequest,
 } from '../types/auth';
@@ -30,5 +31,21 @@ export function changePassword(body: ChangePasswordRequest) {
     ...base,
     method: 'PUT',
     body: JSON.stringify(body),
+  });
+}
+
+export async function checkAktifUser(): Promise<CheckAktifUserResponse> {
+  const res = await apiFetch<ApiResponse<CheckAktifUserResponse>>(
+    '/api/v1/profile/status',
+    base,
+  );
+  if (!res.data) throw new Error('Data status pengguna kosong.');
+  return res.data;
+}
+
+export function nonAktifUser() {
+  return apiFetch<ApiResponse<null>>('/api/v1/profile/deactivate', {
+    ...base,
+    method: 'PATCH',
   });
 }

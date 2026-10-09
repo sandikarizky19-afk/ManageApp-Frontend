@@ -6,6 +6,7 @@ import {
   Settings,
   LogOut,
   UserRoundPlus,
+  BanknoteArrowDown,
 } from 'lucide-react';
 
 // `to: null` menandakan menu ini belum punya rute nyata (placeholder).
@@ -13,6 +14,7 @@ import {
 const NAV_ITEMS = [
   { label: 'Dashboard', to: '/dashboard', icon: LayoutDashboard },
   { label: 'Profile', to: '/profile', icon: User },
+  { label: 'CashFlow', to: '/cashflow', icon: BanknoteArrowDown },
   { label: 'Settings', to: null, icon: Settings },
   { label: 'Register', to: '/register', icon: UserRoundPlus },
 ] as const;
@@ -47,11 +49,14 @@ export function Sidebar({ isOpen, onClose, onLogout }: SidebarProps) {
       )}
 
       <aside
-        className={`
-            h-[calc(100vh-4rem)] shrink-0 overflow-hidden
-            border-r border-gray-200 bg-white
-            transition-all duration-200 ease-in-out
-            ${isOpen ? 'w-64' : 'w-0'}
+        className={` sticky top-16
+          h-[calc(100vh-4rem)]
+          shrink-0
+          overflow-hidden
+          border-r border-gray-200
+          bg-white
+          transition-all duration-200 ease-in-out
+          ${isOpen ? 'w-64' : 'w-0'}
         `}
       >
         {/* Header sidebar, tombol close hanya relevan di mobile */}

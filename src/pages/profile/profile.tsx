@@ -2,10 +2,18 @@ import { useEffect, useState } from 'react';
 import { getTokenClaims } from '../../lib/api';
 import {
   changePassword,
+  checkAktifUser,
   getProfile,
+  nonAktifUser,
   updateProfile,
 } from '../../services/profileService';
-import type { Gender, UpdateProfileRequest } from '../../types/auth';
+import type {
+  CheckAktifUserResponse,
+  Gender,
+  UpdateProfileRequest,
+} from '../../types/auth';
+import { logoutUser } from '../../services/authService';
+import { DatePicker } from '@/components/ui/date-picker';
 
 type Notice = { type: 'success' | 'error'; text: string } | null;
 
@@ -35,6 +43,11 @@ export function Profile() {
   const [profileNotice, setProfileNotice] = useState<Notice>(null);
   const [pwNotice, setPwNotice] = useState<Notice>(null);
   const [createdAt, setCreatedAt] = useState<string | null>(null);
+  const [userStatus, setUserStatus] = useState<CheckAktifUserResponse | null>(
+    null,
+  );
+  const [isLoadingStatus, setIsLoadingStatus] = useState(true);
+  const [isDeactivating, setIsDeactivating] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -66,13 +79,24 @@ export function Profile() {
   }, []);
 
   const onField =
-    (key: keyof typeof form) =>
+    (field: keyof ProfileForm) =>
     (
       e: React.ChangeEvent<
         HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
       >,
-    ) =>
-      setForm((f) => ({ ...f, [key]: e.target.value }));
+    ) => {
+      setForm((prev) => ({
+        ...prev,
+        [field]: e.target.value,
+      }));
+    };
+
+  const onValue = (field: keyof ProfileForm) => (value: string) => {
+    setForm((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
 
   const handleSaveProfile = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -142,6 +166,40 @@ export function Profile() {
       year: 'numeric',
     });
   }
+
+  useEffect(() => {
+    const fetchUserStatus = async () => {
+      try {
+        const data = await checkAktifUser();
+        setUserStatus(data);
+      } catch (error) {
+        console.error('Gagal mengecek status user:', error);
+      } finally {
+        setIsLoadingStatus(false);
+      }
+    };
+
+    fetchUserStatus();
+  }, []);
+
+  const handleDeactivate = async () => {
+    const confirmed = window.confirm(
+      'Apakah Anda yakin ingin menonaktifkan akun ini?',
+    );
+
+    if (!confirmed) return;
+
+    try {
+      setIsDeactivating(true);
+
+      await nonAktifUser();
+      await logoutUser();
+    } catch (error) {
+      console.error('Gagal menonaktifkan akun:', error);
+    } finally {
+      setIsDeactivating(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50/50 lg:px-12 w-full">
@@ -315,15 +373,28 @@ export function Profile() {
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-gray-500">Status</span>
-                <span className="rounded-full bg-emerald-100 px-2.5 py-0.5 text-xs font-semibold text-emerald-700">
-                  Aktif
-                </span>
+                {userStatus && (
+                  <span
+                    className={
+                      userStatus.deleted_at === null
+                        ? 'rounded-full bg-emerald-100 px-2.5 py-0.5 text-xs font-semibold text-emerald-700'
+                        : 'rounded-full bg-red-100 px-2.5 py-0.5 text-xs font-semibold text-red-700'
+                    }
+                  >
+                    {userStatus.deleted_at === null ? 'Aktif' : 'Tidak Aktif'}
+                  </span>
+                )}
               </div>
             </div>
 
             {/* Danger Zone / Logout */}
             <div className="mt-6 pt-6 border-t border-gray-100">
-              <button className="flex w-full items-center justify-center gap-2 rounded-lg border border-red-200 bg-red-50 px-4 py-2.5 text-sm font-semibold text-red-600 transition-colors hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-red-500/20">
+              <button
+                type="button"
+                onClick={handleDeactivate}
+                disabled={isDeactivating}
+                className="flex w-full items-center justify-center gap-2 rounded-lg border border-red-200 bg-red-50 px-4 py-2.5 text-sm font-semibold text-red-600 transition-colors hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-red-500/20 disabled:cursor-not-allowed disabled:opacity-50"
+              >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -338,7 +409,8 @@ export function Profile() {
                     d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75"
                   />
                 </svg>
-                Keluar Akun
+
+                {isDeactivating ? 'Menonaktifkan...' : 'Nonaktifkan Akun'}
               </button>
             </div>
           </div>
@@ -402,12 +474,10 @@ export function Profile() {
                 >
                   Tanggal Lahir
                 </label>
-                <input
-                  id="birthDate"
-                  type="date"
+
+                <DatePicker
                   value={form.birth_date}
-                  onChange={onField('birth_date')}
-                  className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-sm text-gray-900 focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-500/20"
+                  onChange={onValue('birth_date')}
                 />
               </div>
 
