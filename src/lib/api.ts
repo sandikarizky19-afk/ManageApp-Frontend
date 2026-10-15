@@ -2,6 +2,8 @@ const WORKSPACE_API_URL =
   import.meta.env.VITE_WORKSPACE_API_URL || 'http://127.0.0.1:8080';
 const AUTH_API_URL =
   import.meta.env.VITE_AUTH_API_URL || 'http://127.0.0.1:8081';
+const FINANCE_API_URL =
+  import.meta.env.VITE_FINANCE_API_URL || `http://127.0.0.1:8082`;
 
 const ACCESS_TOKEN_KEY = 'access_token';
 const REFRESH_TOKEN_KEY = 'refresh_token';
@@ -181,6 +183,7 @@ export async function apiFetch<T>(
 export const SERVICES = {
   WORKSPACE: WORKSPACE_API_URL,
   AUTH: AUTH_API_URL,
+  FINANCE: FINANCE_API_URL,
 };
 
 export { ACCESS_TOKEN_KEY, REFRESH_TOKEN_KEY, getAccessToken, getRefreshToken };
